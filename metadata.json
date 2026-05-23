@@ -1,0 +1,6 @@
+{
+  "name": "Investment Consulting Dashboard",
+  "description": "An internal-only high-performance dark-themed advisor backend console for senior investment consultants at Vance to manage client leads, plan consultation schedules, track assets under management, and log briefings securely.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
