@@ -254,48 +254,61 @@ export function AppointmentsManager({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-850 bg-slate-900/30 text-slate-400 text-[11px] font-mono tracking-wider uppercase">
-                <th className="py-4 px-5">Target Client</th>
-                <th className="py-4 px-5">Advisory Consultant</th>
-                <th className="py-4 px-5">Scheduled Briefing Date & Time</th>
-                <th className="py-4 px-5">SLA Plan Status</th>
-                <th className="py-4 px-5">Short Brief Briefing Notes</th>
+                <th className="py-4 px-5">Client Name</th>
+                <th className="py-4 px-5">Phone</th>
+                <th className="py-4 px-5">Email</th>
+                <th className="py-4 px-5">Service</th>
+                <th className="py-4 px-5">Appointment Date</th>
+                <th className="py-4 px-5">Created At</th>
+                <th className="py-4 px-5">Status</th>
                 <th className="py-4 px-5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850/60 text-xs">
               {filteredApps.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-500 font-mono">
+                  <td colSpan={8} className="py-12 text-center text-slate-500 font-mono">
                     NO MEETINGS REGISTERED UNDER THIS LOOKUP.
                   </td>
                 </tr>
               ) : (
                 filteredApps.map((app) => {
                   const scheduleTime = new Date(app.scheduled_time);
-                  const isToday = scheduleTime.toDateString() === new Date().toDateString();
                   const stateBadge = statusLabels[app.status] || { txt: 'text-slate-400', bg: 'bg-slate-500/10', border: 'border-slate-800' };
+                  
+                  // Look up matching lead for phone details
+                  const matchedLead = leads.find(l => l.id === app.lead_id);
+                  const phone = matchedLead?.phone || 'N/A';
+                  const serviceArea = matchedLead?.interest_area || 'Wealth Management';
 
                   return (
                     <tr key={app.id} className="hover:bg-[#11131c]/50 duration-150 group">
-                      {/* Client info */}
-                      <td className="py-4 px-5">
-                        <div className="font-semibold text-slate-200">
-                          {app.lead_name}
-                        </div>
-                        {app.lead_email && (
-                          <div className="text-[10px] text-slate-500 font-mono mt-0.5">{app.lead_email}</div>
-                        )}
+                      {/* Client Name */}
+                      <td className="py-4 px-5 font-semibold text-slate-205">
+                        {app.lead_name}
                       </td>
 
-                      {/* Consultant assigned */}
+                      {/* Phone */}
+                      <td className="py-4 px-5 text-slate-300 font-mono">
+                        {phone}
+                      </td>
+
+                      {/* Email */}
+                      <td className="py-4 px-5 text-slate-300 font-mono">
+                        {app.lead_email}
+                      </td>
+
+                      {/* Service / Consultant */}
                       <td className="py-4 px-5">
-                        <div className="flex items-center gap-2 text-slate-300 font-medium">
-                          <Briefcase className="h-3 w-3 text-amber-500/70" />
-                          <span>{app.consultant_name}</span>
+                        <div className="text-slate-200 font-medium">
+                          {serviceArea}
+                        </div>
+                        <div className="text-[10px] text-slate-500 font-mono mt-0.5" title="Strategist Assigned">
+                          {app.consultant_name}
                         </div>
                       </td>
 
-                      {/* Briefing Time */}
+                      {/* Appointment Date */}
                       <td className="py-4 px-5 font-mono">
                         <div className="flex items-center gap-1.5 font-semibold text-slate-200 text-xs">
                           <Clock className="h-3.5 w-3.5 text-amber-500" />
@@ -303,12 +316,21 @@ export function AppointmentsManager({
                             {scheduleTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">
+                        <div className="text-[10px] text-slate-450 mt-0.5">
                           {scheduleTime.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                         </div>
                       </td>
 
-                      {/* Status Badging */}
+                      {/* Created At */}
+                      <td className="py-4 px-5 text-slate-400 font-mono text-[11px]">
+                        {app.created_at ? new Date(app.created_at).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        }) : 'Today'}
+                      </td>
+
+                      {/* Status */}
                       <td className="py-4 px-5">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${stateBadge.bg} ${stateBadge.txt} ${stateBadge.border}`}>
                           {app.status}

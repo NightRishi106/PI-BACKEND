@@ -17,6 +17,7 @@ export default function App() {
   // App data state
   const [leads, setLeads] = useState<Lead[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   
   // Panel management
   const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'appointments' | 'db-setup'>('overview');
@@ -76,20 +77,39 @@ export default function App() {
   const fetchAllData = async () => {
     if (!user) return;
     setLoadingData(true);
+    setFetchError(null);
     try {
       const fetchedLeads = await supabaseService.getLeads();
       const fetchedApps = await supabaseService.getAppointments();
       setLeads(fetchedLeads);
       setAppointments(fetchedApps);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error compiling CRM data:', err);
+      setFetchError(err?.message || 'Service connectivity issue: Failed to compile real-time CRM data from Supabase backend.');
     } finally {
       setLoadingData(false);
     }
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchAllData();
+
+    // 5. Automatically refresh dashboard data every 15 seconds
+    const intervalId = setInterval(async () => {
+      try {
+        const fetchedLeads = await supabaseService.getLeads();
+        const fetchedApps = await supabaseService.getAppointments();
+        setLeads(fetchedLeads);
+        setAppointments(fetchedApps);
+        setFetchError(null);
+      } catch (err: any) {
+        console.error('Silent auto-refresh error:', err);
+        setFetchError(err?.message || 'Service connectivity issue: Failed to compile real-time CRM data from Supabase backend.');
+      }
+    }, 15000);
+
+    return () => clearInterval(intervalId);
   }, [user]);
 
   // Auth Action Handlers
@@ -247,6 +267,21 @@ export default function App() {
 
         {/* Dynamic Panel Workspace */}
         <main className="flex-1 p-4 md:p-8 overflow-y-auto max-w-7xl w-full mx-auto">
+          {fetchError && (
+            <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-rose-450 gap-3">
+              <div className="flex items-center gap-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-rose-500 shrink-0 animate-pulse" />
+                <span>{fetchError}</span>
+              </div>
+              <button 
+                onClick={fetchAllData}
+                className="text-[10px] bg-[#110d10] hover:bg-rose-505/10 text-rose-400 border border-rose-500/20 py-1.5 px-3 rounded-lg transition cursor-pointer font-semibold uppercase tracking-wider font-mono shrink-0"
+              >
+                Force Retry
+              </button>
+            </div>
+          )}
+
           {loadingData && (
             <div className="mb-6 p-3 bg-indigo-500/5 border border-indigo-500/15 rounded-xl flex items-center justify-between text-xs text-indigo-300">
               <div className="flex items-center gap-2">

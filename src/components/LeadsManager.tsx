@@ -241,18 +241,20 @@ export function LeadsManager({ leads, onAddLead, onUpdateLead, onDeleteLead }: L
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-850 bg-slate-900/30 text-slate-400 text-[11px] font-mono tracking-wider uppercase">
-                <th className="py-4 px-5">Consulting Lead</th>
+                <th className="py-4 px-5">Name</th>
+                <th className="py-4 px-5">Phone</th>
+                <th className="py-4 px-5">Email</th>
+                <th className="py-4 px-5">Message</th>
                 <th className="py-4 px-5">Proposed Budget</th>
-                <th className="py-4 px-5">Target Asset Segment</th>
                 <th className="py-4 px-5">Lifecycle Stage</th>
-                <th className="py-4 px-5">Onboard Date</th>
+                <th className="py-4 px-5">Created At</th>
                 <th className="py-4 px-5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-850/60 text-xs">
               {filteredLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-500 font-mono">
+                  <td colSpan={8} className="py-12 text-center text-slate-500 font-mono">
                     NO COMPLIANT RECORDS LOCATED. RE-SPECIFY STATUS FILTERS.
                   </td>
                 </tr>
@@ -267,39 +269,37 @@ export function LeadsManager({ leads, onAddLead, onUpdateLead, onDeleteLead }: L
 
                   return (
                     <tr key={lead.id} className="hover:bg-[#11131c]/50 duration-150 group">
-                      {/* Name / Contact details */}
-                      <td className="py-4 px-5">
-                        <div className="font-medium text-slate-200 text-sm group-hover:text-amber-500 transition-colors">
-                          {lead.name}
+                      {/* Name */}
+                      <td className="py-4 px-5 font-semibold text-slate-200">
+                        {lead.name}
+                      </td>
+
+                      {/* Phone */}
+                      <td className="py-4 px-5 text-slate-300 font-mono">
+                        {lead.phone || <span className="text-slate-600">N/A</span>}
+                      </td>
+
+                      {/* Email */}
+                      <td className="py-4 px-5 text-slate-300 font-mono">
+                        {lead.email}
+                      </td>
+
+                      {/* Message / Notes */}
+                      <td className="py-4 px-5 text-slate-400 max-w-[200px] truncate" title={lead.notes}>
+                        <div className="italic text-[11px]">
+                          {lead.notes || <span className="text-slate-600 font-normal">No notes appended</span>}
                         </div>
-                        <div className="flex flex-col gap-0.5 mt-1">
-                          {lead.email && (
-                            <span className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
-                              <Mail className="h-3 w-3 text-slate-500 shrink-0" />
-                              {lead.email}
-                            </span>
-                          )}
-                          {lead.phone && (
-                            <span className="text-[11px] text-slate-550 flex items-center gap-1 font-mono">
-                              <Phone className="h-3 w-3 text-slate-500 shrink-0" />
-                              {lead.phone}
-                            </span>
-                          )}
-                        </div>
+                        {lead.interest_area && (
+                          <span className="text-[10px] text-amber-500 block mt-0.5">
+                            Target: {lead.interest_area}
+                          </span>
+                        )}
                       </td>
 
                       {/* proposed budget */}
                       <td className="py-4 px-5 font-mono">
                         <span className="text-slate-200 font-medium">
                           {formatINR(lead.investment_budget)}
-                        </span>
-                        <span className="text-[10px] text-slate-500 block">Proposed Cap</span>
-                      </td>
-
-                      {/* Area of interest */}
-                      <td className="py-4 px-5">
-                        <span className="text-xs text-slate-300 font-medium bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-lg">
-                          {lead.interest_area || 'Standard Advisory'}
                         </span>
                       </td>
 
