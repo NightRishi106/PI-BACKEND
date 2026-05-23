@@ -4,12 +4,10 @@ import { supabaseService } from '../lib/supabaseService';
 
 interface SchemaGuideProps {
   isConfigured: boolean;
-  onResetMockData: () => void;
 }
 
-export function SchemaGuide({ isConfigured, onResetMockData }: SchemaGuideProps) {
+export function SchemaGuide({ isConfigured }: SchemaGuideProps) {
   const [copied, setCopied] = useState<string | null>(null);
-  const [resetting, setResetting] = useState(false);
 
   const sqlSchema = `-- ==========================================
 -- INVESTMENT CONSULTING BLUEPRINT SCHEMAS
@@ -75,14 +73,7 @@ CREATE INDEX IF NOT EXISTS idx_appointments_scheduled_time ON public.appointment
     setTimeout(() => setCopied(null), 2500);
   };
 
-  const executeReset = () => {
-    setResetting(true);
-    setTimeout(() => {
-      onResetMockData();
-      setResetting(false);
-      alert('Sandbox mock leads and appointments have been reset to pristine defaults.');
-    }, 800);
-  };
+
 
   return (
     <div className="space-y-6 animate-fade-in" id="db-setup-workspace">
@@ -93,7 +84,7 @@ CREATE INDEX IF NOT EXISTS idx_appointments_scheduled_time ON public.appointment
           Supabase Provisioning Control
         </h2>
         <p className="text-xs text-slate-400 mt-1">
-          Review credentials state, copy database blueprints, and manage local developer sandbox simulations.
+          Review credentials state and copy database blueprints.
         </p>
       </div>
 
@@ -114,8 +105,8 @@ CREATE INDEX IF NOT EXISTS idx_appointments_scheduled_time ON public.appointment
                     CONNECTED
                   </span>
                 ) : (
-                  <span className="text-[10px] px-2 py-0.5 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded font-bold uppercase tracking-wider font-mono animate-pulse">
-                    MOCK/SIMULATED
+                  <span className="text-[10px] px-2 py-0.5 bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded font-bold uppercase tracking-wider font-mono animate-pulse">
+                    DISCONNECTED
                   </span>
                 )}
               </div>
@@ -128,14 +119,14 @@ CREATE INDEX IF NOT EXISTS idx_appointments_scheduled_time ON public.appointment
                 <div className="flex justify-between">
                   <span className="text-slate-500">API HOST URL:</span>
                   <span className="text-slate-300 truncate max-w-[120px]" title={supabaseService.getSupabaseUrl() || 'Not Defined'}>
-                    {supabaseService.getSupabaseUrl() || 'MOCK_SANDBOX'}
+                    {supabaseService.getSupabaseUrl() || 'NOT_CONFIGURED'}
                   </span>
                 </div>
               </div>
             </div>
 
             <p className="text-xs text-slate-450 leading-relaxed">
-              When Google AI Studio environment variables are empty, the app defaults to client-side localStorage simulation. To transition to a live database:
+              Please configure your credentials to connect directly to your live Supabase database:
             </p>
 
             <div className="space-y-2 text-xs text-slate-350">
@@ -168,25 +159,6 @@ CREATE INDEX IF NOT EXISTS idx_appointments_scheduled_time ON public.appointment
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>
-          </div>
-
-          {/* Sandbox utility toolkit */}
-          <div className="bg-[#0c0d12] border border-slate-800 p-5 rounded-xl space-y-4">
-            <h3 className="text-xs font-bold text-amber-500 uppercase tracking-widest font-mono flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4" />
-              Sandbox Toolkit
-            </h3>
-            <p className="text-xs text-slate-400 leading-normal">
-              Need to restore the simulated leads database to the pristine default set? Clear modified records and refresh easily.
-            </p>
-            <button
-              onClick={executeReset}
-              disabled={resetting}
-              className="w-full py-2.5 px-4 bg-slate-950 border border-amber-500/20 hover:border-amber-500/40 text-amber-400 hover:text-amber-300 font-semibold text-xs rounded-lg duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-            >
-              <RefreshCw className={`h-4.5 w-4.5 ${resetting ? 'animate-spin' : ''}`} />
-              <span>Reset Simulated Datasets</span>
-            </button>
           </div>
         </div>
 

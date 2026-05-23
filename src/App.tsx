@@ -100,15 +100,12 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    const confirmExit = window.confirm('Are you sure you want to sign out of the asset terminal?');
-    if (confirmExit) {
-      await supabaseService.signOut();
-      setUser(null);
-      window.history.pushState({}, '', '/login');
-      setCurrentPath('/login');
-      // Reset tab setting
-      setActiveTab('overview');
-    }
+    await supabaseService.signOut();
+    setUser(null);
+    window.history.pushState({}, '', '/login');
+    setCurrentPath('/login');
+    // Reset tab setting
+    setActiveTab('overview');
   };
 
   // Leads CRUD Handlers
@@ -143,11 +140,6 @@ export default function App() {
     await fetchAllData();
   };
 
-  // Developer data reset helper
-  const handleResetMockData = () => {
-    supabaseService.resetMockData();
-    fetchAllData();
-  };
 
   // Show page loading screen during auth boot checkup
   if (checkingAuth) {
@@ -170,7 +162,7 @@ export default function App() {
     if (window.location.pathname === '/admin/dashboard') {
       window.history.replaceState({}, '', '/login');
     }
-    return <Login onLoginSuccess={handleLoginSuccess} isMockMode={!isRealDb} />;
+    return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
   // Force authenticated users to /admin/dashboard
@@ -295,7 +287,6 @@ export default function App() {
           {activeTab === 'db-setup' && (
             <SchemaGuide 
               isConfigured={isRealDb}
-              onResetMockData={handleResetMockData}
             />
           )}
         </main>

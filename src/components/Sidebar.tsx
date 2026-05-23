@@ -57,12 +57,12 @@ export function Sidebar({
           {isRealDb ? (
             <>
               <Zap className="h-3 w-3 text-emerald-400 animate-pulse" />
-              <span className="text-emerald-400">SUPABASE LIVE</span>
+              <span className="text-emerald-400">SUPABASE ACTIVE</span>
             </>
           ) : (
             <>
-              <ZapOff className="h-3 w-3 text-amber-400" />
-              <span className="text-amber-400">SANDBOX SIMULATION</span>
+              <ZapOff className="h-3 w-3 text-rose-500" />
+              <span className="text-rose-500">SUPABASE OFFLINE</span>
             </>
           )}
         </div>

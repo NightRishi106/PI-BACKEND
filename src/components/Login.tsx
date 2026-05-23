@@ -4,10 +4,9 @@ import { supabaseService } from '../lib/supabaseService';
 
 interface LoginProps {
   onLoginSuccess: (user: any) => void;
-  isMockMode: boolean;
 }
 
-export function Login({ onLoginSuccess, isMockMode }: LoginProps) {
+export function Login({ onLoginSuccess }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,11 +30,6 @@ export function Login({ onLoginSuccess, isMockMode }: LoginProps) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickFill = () => {
-    setEmail('admin@investment.com');
-    setPassword('admin123');
   };
 
   return (
@@ -143,31 +137,7 @@ export function Login({ onLoginSuccess, isMockMode }: LoginProps) {
             </button>
           </form>
 
-          {isMockMode && (
-            <div className="mt-6 pt-5 border-t border-slate-800/80">
-              <div className="bg-amber-500/5 border border-amber-500/15 rounded-xl p-3.5">
-                <p className="text-xs font-medium text-amber-400 mb-1 flex items-center gap-1.5">
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-                  </span>
-                  Developer Sandbox Active
-                </p>
-                <p className="text-xs text-slate-400 leading-relaxed mb-2.5">
-                  Real Supabase keys are not configured yet. Use the preset credentials to log in and preview immediately:
-                </p>
-                <div className="flex gap-2 justify-between items-center bg-slate-950 py-1.5 px-3 rounded-lg border border-slate-800/60 font-mono text-xs text-slate-300">
-                  <span>admin@investment.com : admin123</span>
-                  <button
-                    onClick={handleQuickFill}
-                    className="text-[10px] text-amber-500 font-semibold hover:text-amber-400 uppercase tracking-wider"
-                  >
-                    Quick Autofill
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+
         </div>
 
         {/* Footer info tag */}
